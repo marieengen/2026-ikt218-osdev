@@ -8,9 +8,7 @@
 #include <terminal.h>
 #include <memory.h>
 #include <pit.h>
-#include <song/song.h>
-
-extern void play_music(void);
+#include <snake.h>
 
 /*
  * 'end' is defined by the linker script (src/arch/i386/linker.ld).
@@ -51,7 +49,7 @@ void main(uint32_t magic, uint32_t mbi)
     gdt_init();
     terminal_init();
 
-    terminal_writecolor("=== UiA OS - Assignment 5 ===\n\n", VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK);
+    terminal_writecolor("=== UiA OS - Assignment 6 ===\n\n", VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK);
 
     idt_init();
     printf("IDT loaded.\n");
@@ -100,9 +98,10 @@ void main(uint32_t magic, uint32_t mbi)
     void *mem4 = malloc(100);
     printf("malloc(100)   -> 0x%x  (reused freed block)\n\n", (uint32_t)mem4);
 
-    /* --- Music player --- */
-    terminal_writecolor("--- PC Speaker Music Player ---\n", VGA_COLOR_LIGHT_BROWN, VGA_COLOR_BLACK);
-    printf("Starting music. Songs: Mario, Star Wars, Battlefield 1942, Frere Jacques\n\n");
+    /* --- Snake game --- */
+    terminal_writecolor("--- Snake Game ---\n", VGA_COLOR_LIGHT_BROWN, VGA_COLOR_BLACK);
+    printf("Launching Snake in 2 seconds...\n\n");
+    sleep_interrupt(2000);
 
-    play_music();  /* loops forever */
+    run_snake();   /* takes over the screen, loops forever */
 }

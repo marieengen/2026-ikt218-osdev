@@ -119,6 +119,10 @@ static const char scancode_table[128] = {
     0, 0, 0, 0, 0, 0, 0
 };
 
+/* 0 = normal text mode, 1 = raw scancode mode (game) */
+static volatile int     game_mode    = 0;
+static volatile uint8_t last_scancode = 0;
+
 /*
  * keyboard_handler - IRQ1 interrupt service routine
  *
@@ -134,10 +138,15 @@ static void keyboard_handler(registers_t *regs)
 
     /*
      * Bit 7 of the scancode indicates key state:
-     *   0 = make (key pressed)  → handle it
-     *   1 = break (key released) → ignore
+     *   0 = make (key pressed)  -> handle it
+     *   1 = break (key released) -> ignore
      */
     if (scancode & 0x80) {
+        return;
+    }
+
+    if (game_mode) {
+        last_scancode = scancode;
         return;
     }
 
@@ -153,4 +162,17 @@ static void keyboard_handler(registers_t *regs)
 void keyboard_init(void)
 {
     irq_install_handler(1, keyboard_handler);  /* IRQ1 = PS/2 keyboard */
+}
+
+void keyboard_set_game_mode(int mode)
+{
+    game_mode    = mode;
+    last_scancode = 0;
+}
+
+uint8_t keyboard_consume_scancode(void)
+{
+    uint8_t sc   = last_scancode;
+    last_scancode = 0;
+    return sc;
 }

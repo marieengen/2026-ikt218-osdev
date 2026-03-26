@@ -73,6 +73,7 @@ add_executable(uiaos-kernel
     src/memory.c                       # malloc / free / paging
     src/pit.c                          # Programmable Interval Timer driver
     src/song_player.c                  # PC speaker music player
+    src/snake.c                        # Snake game
 )
 
 # Include directories for the kernel target
