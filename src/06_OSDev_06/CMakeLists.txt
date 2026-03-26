@@ -70,6 +70,8 @@ add_executable(uiaos-kernel
     src/isr.c                          # CPU exception dispatcher
     src/irq.c                          # 8259 PIC remapping + IRQ dispatcher
     src/keyboard.c                     # PS/2 keyboard driver
+    src/memory.c                       # malloc / free / paging
+    src/pit.c                          # Programmable Interval Timer driver
 )
 
 # Include directories for the kernel target
