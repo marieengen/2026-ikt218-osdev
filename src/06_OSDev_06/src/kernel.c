@@ -8,6 +8,9 @@
 #include <terminal.h>
 #include <memory.h>
 #include <pit.h>
+#include <song/song.h>
+
+extern void play_music(void);
 
 /*
  * 'end' is defined by the linker script (src/arch/i386/linker.ld).
@@ -48,7 +51,7 @@ void main(uint32_t magic, uint32_t mbi)
     gdt_init();
     terminal_init();
 
-    terminal_writecolor("=== UiA OS - Assignment 4 ===\n\n", VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK);
+    terminal_writecolor("=== UiA OS - Assignment 5 ===\n\n", VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK);
 
     idt_init();
     printf("IDT loaded.\n");
@@ -97,17 +100,9 @@ void main(uint32_t magic, uint32_t mbi)
     void *mem4 = malloc(100);
     printf("malloc(100)   -> 0x%x  (reused freed block)\n\n", (uint32_t)mem4);
 
-    /* --- PIT sleep test --- */
-    terminal_writecolor("--- PIT sleep test ---\n", VGA_COLOR_LIGHT_BROWN, VGA_COLOR_BLACK);
+    /* --- Music player --- */
+    terminal_writecolor("--- PC Speaker Music Player ---\n", VGA_COLOR_LIGHT_BROWN, VGA_COLOR_BLACK);
+    printf("Starting music. Songs: Mario, Star Wars, Battlefield 1942, Frere Jacques\n\n");
 
-    uint32_t counter = 0;
-    while (1) {
-        printf("[%d]: Sleeping with busy-waiting (HIGH CPU).\n", counter);
-        sleep_busy(1000);
-        printf("[%d]: Slept using busy-waiting.\n", counter++);
-
-        printf("[%d]: Sleeping with interrupts (LOW CPU).\n", counter);
-        sleep_interrupt(1000);
-        printf("[%d]: Slept using interrupts.\n", counter++);
-    }
+    play_music();  /* loops forever */
 }

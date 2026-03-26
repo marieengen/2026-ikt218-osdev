@@ -72,6 +72,7 @@ add_executable(uiaos-kernel
     src/keyboard.c                     # PS/2 keyboard driver
     src/memory.c                       # malloc / free / paging
     src/pit.c                          # Programmable Interval Timer driver
+    src/song_player.c                  # PC speaker music player
 )
 
 # Include directories for the kernel target
