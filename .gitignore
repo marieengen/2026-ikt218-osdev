@@ -20,3 +20,5 @@ build.ninja
 
 00_per_arne
 src/group_name/src/kernel.c
+build/06_OSDev_06/Makefile
+build/06_OSDev_06/cmake_install.cmake

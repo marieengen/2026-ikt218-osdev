@@ -150,3 +150,22 @@ add_custom_target(
 	DEPENDS create-fat32-disk uiaos-kernel
 	VERBATIM
 )
+
+########################################
+# Run Target
+########################################
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+	set(QEMU_AUDIO_ARGS -audiodev coreaudio,id=audio0 -machine pcspk-audiodev=audio0)
+	set(QEMU_DISPLAY_ARGS -display cocoa,zoom-to-fit=on)
+else()
+	set(QEMU_AUDIO_ARGS -audiodev sdl,id=audio0,out.buffer-length=40000 -machine pcspk-audiodev=audio0)
+	set(QEMU_DISPLAY_ARGS -display sdl,zoom-to-fit=on)
+endif()
+
+add_custom_target(
+	uiaos-run
+	COMMAND qemu-system-i386 -boot d -cdrom ${CMAKE_CURRENT_BINARY_DIR}/kernel.iso -m 64
+		${QEMU_AUDIO_ARGS} ${QEMU_DISPLAY_ARGS}
+	DEPENDS uiaos-create-image
+	VERBATIM
+)

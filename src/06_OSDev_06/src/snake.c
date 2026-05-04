@@ -226,7 +226,7 @@ static int play_one_game(void)
     vga_fill(GX1, GY1, GX2, GY2, ' ', ATTR(C_BLACK, C_BLACK));
 
     score    = 0;
-    speed_ms = 200;
+    speed_ms = 250;
 
     /* Initial snake: length 3, centre of field, moving right */
     snake_len = 3;
@@ -258,12 +258,16 @@ static int play_one_game(void)
             if (sc == SC_ESC) return 0;  /* back to main menu */
         }
 
-        /* Wait until next step interval */
-        if (get_tick_count() - last_move < (uint32_t)speed_ms) {
+        /* Wait until next step interval.
+         * VGA cells are 9x16px, so vertical steps cover ~1.78x more screen
+         * distance. Compensate by making vertical moves take longer. */
+        uint32_t step_ms = (next_dy != 0) ? (uint32_t)(speed_ms * 16 / 9)
+                                          : (uint32_t)speed_ms;
+        if (get_tick_count() - last_move < step_ms) {
             __asm__ volatile("hlt");
             continue;
         }
-        last_move = get_tick_count();
+        last_move += step_ms;
 
         /* Commit queued direction */
         dir_x = next_dx;
