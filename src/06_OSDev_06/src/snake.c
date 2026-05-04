@@ -48,6 +48,7 @@
 #define SC_S   0x1F
 #define SC_D   0x20
 #define SC_R   0x13   /* restart after game over */
+#define SC_ESC 0x01   /* exit to main menu */
 
 /* ------------------------------------------------------------------ *
  * Snake state                                                         *
@@ -154,7 +155,7 @@ static void draw_status(void)
     vga_puts(30, STATUS_ROW, "Speed: ", a);
     vga_putu(37, STATUS_ROW, (uint32_t)speed_ms, a);
     vga_puts(41, STATUS_ROW, "ms/step", a);
-    vga_puts(55, STATUS_ROW, "R=Restart", a);
+    vga_puts(55, STATUS_ROW, "R=Restart  ESC=Menu", a);
 }
 
 static void draw_food(void)
@@ -208,11 +209,12 @@ static void draw_game_over(void)
 {
     uint8_t a = ATTR(C_RED, C_WHITE);
     int cx = VGA_W / 2;
-    vga_fill(cx - 9, 10, cx + 9, 14, ' ', a);
+    vga_fill(cx - 11, 10, cx + 11, 15, ' ', a);
     vga_puts(cx - 5, 11, "GAME OVER", a);
     vga_puts(cx - 7, 12, "Score: ", a);
     vga_putu(cx, 12, (uint32_t)score, a);
-    vga_puts(cx - 7, 13, "Press R to restart", a);
+    vga_puts(cx - 11, 13, "R = Restart", a);
+    vga_puts(cx - 11, 14, "ESC = Main Menu", a);
 }
 
 /* ------------------------------------------------------------------ *
@@ -252,7 +254,8 @@ static int play_one_game(void)
             if (sc == SC_S && dir_y != -1) { next_dx =  0; next_dy =  1; }
             if (sc == SC_A && dir_x !=  1) { next_dx = -1; next_dy =  0; }
             if (sc == SC_D && dir_x != -1) { next_dx =  1; next_dy =  0; }
-            if (sc == SC_R) return 1;  /* early restart */
+            if (sc == SC_R)   return 1;  /* early restart */
+            if (sc == SC_ESC) return 0;  /* back to main menu */
         }
 
         /* Wait until next step interval */
@@ -315,10 +318,11 @@ static int play_one_game(void)
     beep(165, 300);
     draw_game_over();
 
-    /* Wait for R */
+    /* Wait for R or ESC */
     while (1) {
         uint8_t sc = keyboard_consume_scancode();
-        if (sc == SC_R) return 1;
+        if (sc == SC_R)   return 1;
+        if (sc == SC_ESC) return 0;
         __asm__ volatile("hlt");
     }
 }
@@ -343,7 +347,8 @@ void run_snake(void)
     vga_puts(24, 12, "  WASD to move       ", sa);
     vga_puts(24, 13, "  Eat * to grow      ", sa);
     vga_puts(24, 14, "  Avoid walls & self ", sa);
-    vga_puts(24, 15, "  Press any key...   ", sa);
+    vga_puts(24, 15, "  ESC = Main Menu    ", sa);
+    vga_puts(24, 16, "  Press any key...   ", sa);
 
     /* Drain old scancodes, then wait for a fresh one */
     keyboard_consume_scancode();
@@ -353,10 +358,9 @@ void run_snake(void)
     /* Erase splash */
     vga_fill(GX1, GY1, GX2, GY2, ' ', ATTR(C_BLACK, C_BLACK));
 
-    /* Game loop — play_one_game returns 1 to restart */
+    /* Game loop: play_one_game returns 1 to restart, 0 to exit to menu */
     while (play_one_game())
         ;
 
-    /* Should never reach here */
-    while (1) __asm__ volatile("hlt");
+    keyboard_set_game_mode(0);
 }

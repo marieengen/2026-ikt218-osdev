@@ -69,9 +69,11 @@ void irq_init(void)
     outb(PIC2_DATA, ICW4_8086);
     io_wait();
 
-    /* Restore saved masks */
-    outb(PIC1_DATA, mask1);
-    outb(PIC2_DATA, mask2);
+    /* Unmask IRQ0 (PIT) and IRQ1 (keyboard); mask everything else */
+    (void)mask1;
+    (void)mask2;
+    outb(PIC1_DATA, 0xFC);  /* 1111 1100 — IRQ0 and IRQ1 unmasked */
+    outb(PIC2_DATA, 0xFF);  /* all slave IRQs masked               */
 }
 
 void irq_install_handler(uint8_t irq_num, irq_handler_t handler)

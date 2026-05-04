@@ -12,6 +12,8 @@ iso
 .env
 build.ninja
 .ninja*
+*png
+.DS_Store
 
 00_per_arne
 src/group_name/src/kernel.c

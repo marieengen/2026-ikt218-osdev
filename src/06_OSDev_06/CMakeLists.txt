@@ -134,8 +134,8 @@ add_custom_target(
 	uiaos-create-image
 	COMMAND rm -rf ${ISO_DIR}
 	COMMAND mkdir -p ${ISO_DIR}
-	COMMAND cp -v $<TARGET_FILE:uiaos-kernel> 
-	 	${LIMINE_CONFIG_DIR}/limine.cfg ${LIMINE_DIR}/limine-bios.sys ${LIMINE_DIR}/limine-bios-cd.bin
+	COMMAND cp -v $<TARGET_FILE:uiaos-kernel>
+	 	${LIMINE_CONFIG_DIR}/limine.conf ${LIMINE_DIR}/limine-bios.sys ${LIMINE_DIR}/limine-bios-cd.bin
 		${LIMINE_DIR}/limine-uefi-cd.bin ${ISO_DIR}/
 	COMMAND mkdir -p ${ISO_DIR}/EFI/BOOT
 	COMMAND cp -v ${LIMINE_DIR}/BOOTX64.EFI ${ISO_DIR}/EFI/BOOT/

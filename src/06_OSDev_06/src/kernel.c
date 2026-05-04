@@ -98,10 +98,33 @@ void main(uint32_t magic, uint32_t mbi)
     void *mem4 = malloc(100);
     printf("malloc(100)   -> 0x%x  (reused freed block)\n\n", (uint32_t)mem4);
 
-    /* --- Snake game --- */
-    terminal_writecolor("--- Snake Game ---\n", VGA_COLOR_LIGHT_BROWN, VGA_COLOR_BLACK);
-    printf("Launching Snake in 2 seconds...\n\n");
-    sleep_interrupt(2000);
+    /* --- Main menu --- */
+    sleep_interrupt(1000);
 
-    run_snake();   /* takes over the screen, loops forever */
+    /* Scancode for '1' key (Set 1) */
+    #define SC_KEY_1  0x02
+
+    while (1) {
+        terminal_init();
+        terminal_writecolor("=== UiA OS - Assignment 6 ===\n\n", VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK);
+        terminal_writecolor("  Main Menu\n", VGA_COLOR_WHITE, VGA_COLOR_BLACK);
+        terminal_writecolor("  ----------\n", VGA_COLOR_DARK_GREY, VGA_COLOR_BLACK);
+        terminal_writecolor("  [1]  Play Snake\n", VGA_COLOR_LIGHT_GREEN, VGA_COLOR_BLACK);
+        terminal_writecolor("\n  Press 1 to select.\n", VGA_COLOR_LIGHT_GREY, VGA_COLOR_BLACK);
+
+        keyboard_set_game_mode(1);
+        keyboard_consume_scancode();   /* drain any leftover keypress */
+
+        uint8_t sc = 0;
+        while (sc == 0) {
+            sc = keyboard_consume_scancode();
+            __asm__ volatile("hlt");
+        }
+        keyboard_set_game_mode(0);
+
+        if (sc == SC_KEY_1) {
+            run_snake();
+        }
+        /* Any other key just redraws the menu */
+    }
 }
