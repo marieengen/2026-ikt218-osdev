@@ -1,10 +1,11 @@
 #!/bin/bash
-ISO="build/06_OSDev_06/kernel.iso"
+REPO="$(cd "$(dirname "$0")" && pwd)"
+ISO="$REPO/build/06_OSDev_06/kernel.iso"
 
 if [ ! -f "$ISO" ]; then
     echo "kernel.iso not found, building..."
-    cmake -S src/06_OSDev_06 -B build/06_OSDev_06 --toolchain toolchain-i686.cmake
-    cmake --build build/06_OSDev_06 --target uiaos-create-image
+    cmake -S "$REPO/src/06_OSDev_06" -B "$REPO/build/06_OSDev_06" --toolchain "$REPO/toolchain-i686.cmake"
+    cmake --build "$REPO/build/06_OSDev_06" --target uiaos-create-image
 fi
 
 if [[ "$(uname)" == "Darwin" ]]; then
