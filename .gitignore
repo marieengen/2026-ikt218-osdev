@@ -9,6 +9,9 @@ venv
 CMakeCache*
 CMakeFiles
 iso
+*.iso
+Makefile
+cmake_install.cmake
 .env
 build.ninja
 .ninja*
