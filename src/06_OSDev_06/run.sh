@@ -1,5 +1,6 @@
 #!/bin/bash
-REPO="$(cd "$(dirname "$0")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO="$(cd "$SCRIPT_DIR/../.." && pwd)"
 ISO="$REPO/build/06_OSDev_06/kernel.iso"
 IMG="$REPO/build/06_OSDev_06/kernel.img"
 
@@ -8,7 +9,7 @@ if [ ! -f "$ISO" ]; then
         ISO="$IMG"
     else
         echo "kernel.iso not found, building..."
-        cmake -S "$REPO/src/06_OSDev_06" -B "$REPO/build/06_OSDev_06" --toolchain "$REPO/toolchain-i686.cmake" || { echo "Build failed."; exit 1; }
+        cmake -S "$SCRIPT_DIR" -B "$REPO/build/06_OSDev_06" --toolchain "$SCRIPT_DIR/toolchain-i686.cmake" || { echo "Build failed."; exit 1; }
         cmake --build "$REPO/build/06_OSDev_06" --target uiaos-create-image || { echo "Build failed."; exit 1; }
     fi
 fi

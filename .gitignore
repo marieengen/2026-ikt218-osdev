@@ -9,16 +9,9 @@ venv
 CMakeCache*
 CMakeFiles
 iso
-*.iso
-Makefile
-cmake_install.cmake
 .env
 build.ninja
 .ninja*
-*png
-.DS_Store
 
 00_per_arne
 src/group_name/src/kernel.c
-build/06_OSDev_06/Makefile
-build/06_OSDev_06/cmake_install.cmake
